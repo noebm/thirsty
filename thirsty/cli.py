@@ -1,18 +1,57 @@
 import argparse
 import math
+import os
 from io import BytesIO
 
+import folium
 import gpxpy
 import requests
+import tkinter as tk
+import webview
 
 from rich.console import Console
 from rich.progress import track
-
+from tkinterweb import HtmlFrame
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
 
 console = Console()
+
+
+def display_gpx_on_map(data, pois):
+    """
+    Display the GPX route and POIs on a map
+    """
+
+    # Create a base map centered around the middle of the GPX track
+    track_latitudes = [point.latitude for track in data.tracks for segment in track.segments for point in segment.points]
+    track_longitudes = [point.longitude for track in data.tracks for segment in track.segments for point in segment.points]
+
+    center_lat = sum(track_latitudes) / len(track_latitudes)
+    center_lon = sum(track_longitudes) / len(track_longitudes)
+
+    map_center = [center_lat, center_lon]
+    folium_map = folium.Map(location=map_center, zoom_start=12)
+
+    # Plot the GPX track on the map
+    for track in data.tracks:
+        for segment in track.segments:
+            # Create a list of coordinates from the GPX track segment
+            track_coords = [(point.latitude, point.longitude) for point in segment.points]
+            folium.PolyLine(track_coords, color="blue", weight=2.5, opacity=1).add_to(folium_map)
+
+    # Plot POIs on the map
+    print(pois)
+    for poi in pois:
+        print(poi)
+        folium.Marker(
+            location=[poi['lat'], poi['lon']],
+            popup=folium.Popup(f"{poi['tags']["amenity"]}", max_width=300),
+            icon=folium.Icon(color="blue", icon="info-sign")
+        ).add_to(folium_map)
+
+    return folium_map
 
 
 def download_gpx(url):
@@ -21,14 +60,11 @@ def download_gpx(url):
     """
 
     console.print(f"⏳ Downloading GPX from {url}")
-    # response = requests.get(url)
-    # response.raise_for_status()
-    # return BytesIO(response.content)
 
     response = requests.get(url, stream=True)
     response.raise_for_status()
 
-    total_size = int(response.headers.get('Content-Length', 0))
+    total_size = int(response.headers.get("Content-Length", 0))
 
     data = BytesIO()
 
@@ -81,8 +117,9 @@ def add_waypoints_to_gpx(gpx, pois):
         wpt = gpxpy.gpx.GPXWaypoint()
         wpt.latitude = poi["lat"]
         wpt.longitude = poi["lon"]
-        wpt.name = "Eau"
+        wpt.name = "Water"
         wpt.description = "Water"
+        wpt.symbol="water-drop"
         gpx.waypoints.append(wpt)
     return gpx
 
@@ -131,6 +168,9 @@ def main():
     parser.add_argument("-d", "--distance", type=float, default=100,
                         help="search distance around trace")
 
+    parser.add_argument("--html", action="store_true",
+                        help="generate HTML interactive map to <output>.html")
+
     args = parser.parse_args()
 
     if args.input.startswith("http"):
@@ -145,5 +185,9 @@ def main():
     gpx = add_waypoints_to_gpx(gpx, pois)
 
     args.output.write(gpx.to_xml())
+
+    if args.html:
+        map = display_gpx_on_map(gpx, pois)
+        map.save(args.output.name + ".html")
 
     console.print(f"✅ Added {len(pois)} POI to {args.output.name}")

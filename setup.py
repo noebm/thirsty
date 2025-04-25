@@ -8,6 +8,7 @@ setup(
         "gpxpy==1.6.2",
         "requests==2.32.3",
         "rich==14.0.0",
+        "folium==0.19.5",
     ],
     entry_points={
         "console_scripts": [
