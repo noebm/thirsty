@@ -1,10 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="thirsty",
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
+        "pre-commit==4.2.0",
         "gpxpy==1.6.2",
         "requests==2.32.3",
         "rich==14.0.0",

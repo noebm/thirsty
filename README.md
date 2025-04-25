@@ -83,7 +83,7 @@ thirsty input.gpx output.gpx --distance 150
 
 ### Requirements
 
-- Python 3.7+  
+- Python 3.7+
 - **requests**: For HTTP requests to Overpass API and downloading GPX files.
 - **gpxpy**: For reading and writing GPX files.
 - **rich**: For the progress bar and rich text output.

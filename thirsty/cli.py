@@ -1,17 +1,14 @@
 import argparse
 import math
-import os
 from io import BytesIO
 
 import folium
 import gpxpy
 import requests
-import tkinter as tk
-import webview
 
 from rich.console import Console
-from rich.progress import track
-from tkinterweb import HtmlFrame
+from rich.progress import track, Progress
+
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
