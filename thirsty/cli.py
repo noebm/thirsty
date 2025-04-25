@@ -1,5 +1,6 @@
 import argparse
 import math
+from io import BytesIO
 
 import gpxpy
 import requests
@@ -13,6 +14,33 @@ OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
 console = Console()
 
+
+def download_gpx(url):
+    """
+    Download GPX from URL
+    """
+
+    console.print(f"⏳ Downloading GPX from {url}")
+    # response = requests.get(url)
+    # response.raise_for_status()
+    # return BytesIO(response.content)
+
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    total_size = int(response.headers.get('Content-Length', 0))
+
+    data = BytesIO()
+
+    with Progress() as progress:
+        task = progress.add_task("[cyan] Downloading", total=total_size)
+
+        for chunk in response.iter_content(chunk_size=1024):
+            data.write(chunk)
+            progress.update(task, advance=len(chunk))
+
+    data.seek(0)
+    return data
 
 def get_bounds(gpx):
     """
@@ -95,8 +123,7 @@ def filter_pois_near_track(gpx, pois, max_distance_m=100):
 def main():
     parser = argparse.ArgumentParser(description="Add water POI to a GPX trace.")
 
-    parser.add_argument("input", help="input GPX trace",
-                        type=argparse.FileType("rb"))
+    parser.add_argument("input", help="input GPX trace")
 
     parser.add_argument("output", help="output GPX trace",
                         type=argparse.FileType("w"))
@@ -106,7 +133,12 @@ def main():
 
     args = parser.parse_args()
 
-    gpx = gpxpy.parse(args.input)
+    if args.input.startswith("http"):
+        input = download_gpx(args.input)
+    else:
+        input = open(args.input, "rb")
+
+    gpx = gpxpy.parse(input)
     bounds = get_bounds(gpx)
     pois = query_drinking_water(*bounds)
     pois = filter_pois_near_track(gpx, pois, max_distance_m=args.distance)
