@@ -176,7 +176,7 @@ def main():
     if args.input.startswith("http"):
         input = download_gpx(args.input)
     else:
-        input = open(args.input, "rb")
+        input = open(args.input, "rb") # noqa: SIM115
 
     gpx = gpxpy.parse(input)
     bounds = get_bounds(gpx)
