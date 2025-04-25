@@ -5,15 +5,13 @@ from io import BytesIO
 import folium
 import gpxpy
 import requests
-
-from rich.console import Console
-from rich.progress import track, Progress
-
+import rich.console
+import rich.progress
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
 
-console = Console()
+console = rich.console.Console()
 
 
 def display_gpx_on_map(data, pois):
@@ -22,8 +20,15 @@ def display_gpx_on_map(data, pois):
     """
 
     # Create a base map centered around the middle of the GPX track
-    track_latitudes = [point.latitude for track in data.tracks for segment in track.segments for point in segment.points]
-    track_longitudes = [point.longitude for track in data.tracks for segment in track.segments for point in segment.points]
+    track_latitudes = [ point.latitude
+                        for track in data.tracks
+                        for segment in track.segments
+                        for point in segment.points ]
+
+    track_longitudes = [ point.longitude
+                         for track in data.tracks
+                         for segment in track.segments
+                         for point in segment.points ]
 
     center_lat = sum(track_latitudes) / len(track_latitudes)
     center_lon = sum(track_longitudes) / len(track_longitudes)
@@ -39,9 +44,7 @@ def display_gpx_on_map(data, pois):
             folium.PolyLine(track_coords, color="blue", weight=2.5, opacity=1).add_to(folium_map)
 
     # Plot POIs on the map
-    print(pois)
     for poi in pois:
-        print(poi)
         folium.Marker(
             location=[poi['lat'], poi['lon']],
             popup=folium.Popup(f"{poi['tags']["amenity"]}", max_width=300),
@@ -65,7 +68,7 @@ def download_gpx(url):
 
     data = BytesIO()
 
-    with Progress() as progress:
+    with rich.progress.Progress() as progress:
         task = progress.add_task("[cyan] Downloading", total=total_size)
 
         for chunk in response.iter_content(chunk_size=1024):
@@ -146,7 +149,7 @@ def filter_pois_near_track(gpx, pois, max_distance_m=100):
     points = [pt for trk in gpx.tracks for seg in trk.segments for pt in seg.points]
     nearby_pois = []
 
-    for poi in track(pois, description="Filtering POI"):
+    for poi in rich.progress.track(pois, description="Filtering POI"):
         lat, lon = poi["lat"], poi["lon"]
         if any(haversine(lat, lon, pt.latitude, pt.longitude) < max_distance_m for pt in points):
             nearby_pois.append(poi)
