@@ -1,6 +1,7 @@
 import argparse
 import math
 from io import BytesIO
+import re
 
 import folium
 import gpxpy
@@ -132,6 +133,7 @@ def add_waypoints_to_gpx(gpx, pois):
         wpt.description = "Water"
         wpt.symbol="water-drop"
         gpx.waypoints.append(wpt)
+
     return gpx
 
 
@@ -166,6 +168,14 @@ def filter_pois_near_track(gpx, pois, max_distance_m=100):
             nearby_pois.append(poi)
 
     return nearby_pois
+
+
+def sanitize_gpx_text(data):
+    """
+    Fix GPX content by replacing unescaped '&' with '&amp;'
+    """
+
+    return re.sub(r'&(?!amp;|quot;|lt;|gt;|apos;)', '&amp;', data)
 
 
 def main():
@@ -204,10 +214,12 @@ def main():
     pois = filter_pois_near_track(gpx, pois, max_distance_m=args.distance)
     gpx = add_waypoints_to_gpx(gpx, pois)
 
-    args.output.write(gpx.to_xml())
-
     if args.html:
         map = display_gpx_on_map(gpx, pois)
         map.save(args.output.name + ".html")
+
+    gpx = sanitize_gpx_text(gpx.to_xml())
+
+    args.output.write(gpx)
 
     console.print(f"✅ Added {len(pois)} POI to {args.output.name}")
