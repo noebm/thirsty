@@ -18,6 +18,26 @@ Thirsty is a Python tool that enhances your GPX files by adding Points of Intere
 
 Found a bug? Need a new feature? [Open an Issue](https://github.com/jsleroy/thirsty/issues)!
 
+## 📷 Screenshots
+
+### Add Water Points to Your GPX
+
+<p align="center">
+<img src="assets/before-after.png" alt="Before" width="80%"/>
+</p>
+
+### Visualize on a Map
+
+<p align="center">
+<img src="assets/map.png" alt="Map Display" width="80%"/>
+</p>
+
+### Simple Command-Line Interface
+
+<p align="center">
+<img src="assets/terminal.png" alt="Terminal Usage" width="80%"/>
+</p>
+
 ## Features
 
 - **Query Overpass API**: Fetch drinking water POIs from OpenStreetMap.
