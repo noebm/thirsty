@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thirsty - Add Water Points to Your GPX Routes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      width: 120px;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0.5rem 0;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+    .buttons {
+      margin-top: 2rem;
+    }
+    .buttons a {
+      text-decoration: none;
+      background: #0077ff;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 0 0.5rem;
+      transition: background 0.3s;
+    }
+    .buttons a:hover {
+      background: #005dc1;
+    }
+    .features {
+      max-width: 800px;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .features h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .features ul {
+      list-style: none;
+      padding: 0;
+      font-size: 1.1rem;
+    }
+    .features ul li {
+      margin: 0.5rem 0;
+    }
+    footer {
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/logo.png" alt="Thirsty Logo">
+    <h1>Thirsty</h1>
+    <p>Add water refill points to your GPX routes automatically</p>
+    <div class="buttons">
+      <a href="https://github.com/jsleroy/thirsty" target="_blank">View on GitHub</a>
+      <a href="#features">Learn More</a>
+    </div>
+  </header>
+
+  <section class="features" id="features">
+    <h2>Why Thirsty?</h2>
+    <ul>
+      <li>✨ Instantly add water points to your GPX tracks</li>
+      <li>🚰 Based on OpenStreetMap public data</li>
+      <li>🚗 Works offline after fetching points</li>
+      <li>✅ Compatible with Garmin, Wahoo, Komoot</li>
+      <li>⭐ Open source and free (GPL v3)</li>
+    </ul>
+  </section>
+
+  <footer>
+    &copy; 2025 Thirsty Project. Made with ❤️ for bikepackers.
+  </footer>
+</body>
+</html>
