@@ -49,12 +49,12 @@
     .buttons a:hover {
       background: #005dc1;
     }
-    .features {
+    .features, .screenshots {
       max-width: 800px;
       text-align: center;
       margin-top: 3rem;
     }
-    .features h2 {
+    .features h2, .screenshots h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
@@ -65,6 +65,12 @@
     }
     .features ul li {
       margin: 0.5rem 0;
+    }
+    .screenshots img {
+      max-width: 80%;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     footer {
       margin-top: 4rem;
@@ -80,12 +86,11 @@
     <p>Add water refill points to your GPX routes automatically</p>
     <div class="buttons">
       <a href="https://github.com/jsleroy/thirsty" target="_blank">View on GitHub</a>
-      <a href="#features">Learn More</a>
     </div>
   </header>
 
   <section class="screenshots" id="screenshots">
-    <h1>Screenshots</h1>
+    <h2>Screenshots</h2>
     <p>See Thirsty in action:</p>
     <img src="assets/before-after.png" alt="Before and After" style="max-width: 40%; margin-bottom: 2rem;">
     <img src="assets/map.png" alt="Map Display" style="max-width: 40%;">
