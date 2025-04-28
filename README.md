@@ -1,7 +1,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/jsleroy/thirsty.svg?style=social)](https://github.com/jsleroy/thirsty/stargazers)
 
 <p align="center">
-<img src="docs/assests/logo.png" alt="Thirsty Logo" width="200"/>
+<img src="docs/assets/logo.png" alt="Thirsty Logo" width="200"/>
 </p>
 
 # Thirsty
