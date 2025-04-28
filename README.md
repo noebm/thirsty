@@ -47,6 +47,39 @@ Found a bug? Need a new feature? [Open an Issue](https://github.com/jsleroy/thir
 - **In-Memory Handling**: No need for temporary files; everything is handled in memory for speed.
 - **Progress Bar**: Monitor download and processing progress with the `rich` module.
 
+## POI Type Selection
+
+By default, **Thirsty** searches for public drinking water fountains (`drinking_water` POIs).  
+You can customize which types of potable water points you want to add using the `--poi-type` (or `-p`) option.
+
+- You can specify **one or more** POI types by repeating the `-p` option.
+- If no `-p` option is specified, `drinking_water` will be used automatically.
+
+### Available POI types
+
+| POI Type        | Description                                                            |
+|:----------------|:-----------------------------------------------------------------------|
+| `drinking_water` | Public drinking water fountains (default).                            |
+| `water_point`    | Water refill stations for caravans, RVs, or marinas (only potable ones). |
+| `water_tap`      | Taps providing potable water.                                          |
+| `spring`         | Natural springs with potable water.                                   |
+| `fountain`       | Public decorative fountains explicitly marked as potable.             |
+
+### Example usage
+
+Use default drinking water points:
+
+```bash
+thirsty -i trace.gpx -o trace_with_poi.gpx
+```
+
+Use **only** springs and water taps:
+
+```bash
+thirsty -i trace.gpx -o trace_with_poi.gpx -p spring -p tap
+```
+If an invalid POI type is provided, the program will display an error message and exit.
+
 ## ⚙️ Installation
 
 Clone this repository and set up a virtual environment:
