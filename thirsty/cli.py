@@ -11,6 +11,15 @@ import rich.progress
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
 
+AMENITIES = {
+    "water": "[amenity=drinking_water]",
+    "point": "[amenity=water_point][drinking_water=yes]",
+    "tap": "[man_made=water_tap][drinking_water=yes]",
+    "spring": "[natural=spring][drinking_water=yes]",
+    "fountain": "[amenity=fountain][drinking_water=yes]",
+}
+
+
 console = rich.console.Console()
 
 
@@ -90,19 +99,21 @@ def get_bounds(gpx):
     return min_lat, min_lon, max_lat, max_lon
 
 
-def query_drinking_water(min_lat, min_lon, max_lat, max_lon):
+def query_overpass(bbox, poi_types):
     """
-    Query overpass API for water
+    Generate an Overpass QL query for potable drinking water POIs.
     """
-
-    query = f"""
-    [out:json][timeout:25];
-    (
-      node["amenity"="drinking_water"]({min_lat},{min_lon},{max_lat},{max_lon});
-      node["natural"="spring"]({min_lat},{min_lon},{max_lat},{max_lon});
-    );
-    out body;
-    """
+    
+    south, west, north, east = bbox
+    bbox_str = f"({south},{west},{north},{east})"
+    
+    query_parts = []
+    for poi_type in poi_types:
+        tag_filter = AMENITIES[poi_type]
+        for osm_type in ["node", "way", "relation"]:
+            query_parts.append(f'{osm_type}{tag_filter}{bbox_str};')
+    
+    query = "[out:json][timeout:25];(" + "".join(query_parts) + ");out center;"
     response = requests.post(OVERPASS_URL, data=query)
     response.raise_for_status()
     return response.json()["elements"]
@@ -171,6 +182,10 @@ def main():
     parser.add_argument("--html", action="store_true",
                         help="generate HTML interactive map to <output>.html")
 
+    parser.add_argument("-p", "--poi-type", action="append",
+                        choices=AMENITIES.keys(), default=None,
+                        help=f"set which type of amenities to consider (default: {next(iter(AMENITIES))}")
+
     args = parser.parse_args()
 
     if args.input.startswith("http"):
@@ -178,9 +193,14 @@ def main():
     else:
         input = open(args.input, "rb") # noqa: SIM115
 
+    if args.poi_type is None:
+        args.poi_type = next(iter(AMENITIES))
+
+    console.print(f"Selected amenities: {args.poi_type}")
+
     gpx = gpxpy.parse(input)
     bounds = get_bounds(gpx)
-    pois = query_drinking_water(*bounds)
+    pois = query_overpass(bounds, args.poi_type)
     pois = filter_pois_near_track(gpx, pois, max_distance_m=args.distance)
     gpx = add_waypoints_to_gpx(gpx, pois)
 
