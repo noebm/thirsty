@@ -14,6 +14,8 @@ Add hydration points to your GPX tracks automatically 🚴‍♂️💧
 
 Thirsty is a Python tool that enhances your GPX files by adding Points of Interest (POIs), particularly drinking water points, to your cycling or running routes. It integrates with the Overpass API to query OpenStreetMap for relevant points along your route and adds them to the GPX file. Ideal for long-distance cycling events, ultra races, or any activity where hydration points matter!
 
+Found a bug? Need a new feature? [Open an Issue](https://github.com/jsleroy/thirsty/issues)!
+
 ## Features
 
 - **Query Overpass API**: Fetch drinking water POIs from OpenStreetMap.
