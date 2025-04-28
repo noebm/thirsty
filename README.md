@@ -1,3 +1,6 @@
+<p align="center">
+<img src="logo.png" alt="Thirsty Logo" width="200"/>
+</p>
 
 # Thirsty: GPX POI Adder
 
