@@ -194,7 +194,7 @@ def main():
         input = open(args.input, "rb") # noqa: SIM115
 
     if args.poi_type is None:
-        args.poi_type = next(iter(AMENITIES))
+        args.poi_type = [next(iter(AMENITIES))]
 
     console.print(f"Selected amenities: {args.poi_type}")
 
