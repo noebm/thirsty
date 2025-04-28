@@ -1,3 +1,5 @@
+[![GitHub stars](https://img.shields.io/github/stars/jsleroy/thirsty.svg?style=social)](https://github.com/jsleroy/thirsty/stargazers)
+
 <p align="center">
 <img src="logo.png" alt="Thirsty Logo" width="200"/>
 </p>
