@@ -2,7 +2,9 @@
 <img src="logo.png" alt="Thirsty Logo" width="200"/>
 </p>
 
-# Thirsty: GPX POI Adder
+# Thirsty
+
+Add hydration points to your GPX tracks automatically 🚴‍♂️💧
 
 <p align="center">
 <a href="https://www.paypal.com/donate/?business=TJAXC3T4WD66L&no_recurring=0&currency_code=EUR" target="_blank">
