@@ -33,10 +33,10 @@ jobs:
       - name: Run tests
         run: thirsty examples/test.gpx output.gpx
 
-  release:
+  bump:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'   # <<< only run bump if push to main
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repository
@@ -58,3 +58,16 @@ jobs:
           cz bump --yes
           git push origin HEAD:main
           git push --tags
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: bump
+    if: github.ref_type == 'tag'
+    steps:
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
