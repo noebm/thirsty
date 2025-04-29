@@ -1,6 +1,6 @@
 import argparse
+import io
 import math
-from io import BytesIO
 import re
 
 import folium
@@ -76,7 +76,7 @@ def download_gpx(url):
 
     total_size = int(response.headers.get("Content-Length", 0))
 
-    data = BytesIO()
+    data = io.BytesIO()
 
     with rich.progress.Progress() as progress:
         task = progress.add_task("[cyan] Downloading", total=total_size)
