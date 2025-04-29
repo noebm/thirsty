@@ -54,7 +54,7 @@ def display_gpx_on_map(data, pois):
     for poi in pois:
         folium.Marker(
             location=[poi['lat'], poi['lon']],
-            popup=folium.Popup(f"{poi['tags']["amenity"]}", max_width=300),
+            popup=folium.Popup(f"{poi['tags']['amenity']}", max_width=300),
             icon=folium.Icon(color="blue", icon="info-sign")
         ).add_to(folium_map)
 
