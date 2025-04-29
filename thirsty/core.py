@@ -5,9 +5,11 @@ import re
 import folium
 import gpxpy
 import requests
-
 import rich.console
 import rich.progress
+
+console = rich.console.Console()
+
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
@@ -173,4 +175,3 @@ def sanitize_gpx_text(data):
     """
 
     return re.sub(r'&(?!amp;|quot;|lt;|gt;|apos;)', '&amp;', data)
-
