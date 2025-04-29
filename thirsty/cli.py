@@ -6,7 +6,6 @@ import rich.progress
 
 import thirsty.core
 
-
 console = rich.console.Console()
 
 
@@ -33,7 +32,7 @@ def main():
     args = parser.parse_args()
 
     if args.input.startswith("http"):
-        input = download_gpx(args.input)
+        input = thirsty.core.download_gpx(args.input)
     else:
         input = open(args.input, "rb") # noqa: SIM115
 

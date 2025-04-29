@@ -5,9 +5,11 @@ import re
 import folium
 import gpxpy
 import requests
-
 import rich.console
 import rich.progress
+
+console = rich.console.Console()
+
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
@@ -54,7 +56,7 @@ def display_gpx_on_map(data, pois):
     for poi in pois:
         folium.Marker(
             location=[poi['lat'], poi['lon']],
-            popup=folium.Popup(f"{poi['tags']["amenity"]}", max_width=300),
+            popup=folium.Popup(f"{poi['tags']['amenity']}", max_width=300),
             icon=folium.Icon(color="blue", icon="info-sign")
         ).add_to(folium_map)
 
@@ -173,4 +175,3 @@ def sanitize_gpx_text(data):
     """
 
     return re.sub(r'&(?!amp;|quot;|lt;|gt;|apos;)', '&amp;', data)
-

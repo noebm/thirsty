@@ -49,7 +49,7 @@ Found a bug? Need a new feature? [Open an Issue](https://github.com/jsleroy/thir
 
 ## POI Type Selection
 
-By default, **Thirsty** searches for public drinking water fountains (`drinking_water` POIs).  
+By default, **Thirsty** searches for public drinking water fountains (`drinking_water` POIs).
 You can customize which types of potable water points you want to add using the `--poi-type` (or `-p`) option.
 
 - You can specify **one or more** POI types by repeating the `-p` option.
