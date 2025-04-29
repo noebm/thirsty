@@ -1,0 +1,15 @@
+[tool.commitizen]
+version = "0.0.0"
+name = "cz_conventional_commits"
+tag_format = "v$version"
+update_changelog_on_bump = true
+bump_pattern = "(^feat|^fix|^BREAKING CHANGE)"
+bump_map.major = "BREAKING CHANGE"
+bump_map.minor = "feat"
+bump_map.patch = "fix"
+change_type_order = ["major", "minor", "patch"]
+ignore_merge_commits = true
+# version_files = [
+#   "pyproject.toml",
+#   "your_package/__init__.py"
+# ]
