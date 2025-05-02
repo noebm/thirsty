@@ -110,8 +110,9 @@ def query_overpass(bbox, poi_types):
     query_parts = []
     for poi_type in poi_types:
         tag_filter = AMENITIES[poi_type]
-        for osm_type in ["node", "way", "relation"]:
-            query_parts.append(f'{osm_type}{tag_filter}{bbox_str};')
+        # for osm_type in ["node", "way", "relation"]:
+        #     query_parts.append(f'{osm_type}{tag_filter}{bbox_str};')
+        query_parts.append(f'node{tag_filter}{bbox_str};')
 
     query = "[out:json][timeout:25];(" + "".join(query_parts) + ");out center;"
     response = requests.post(OVERPASS_URL, data=query)
