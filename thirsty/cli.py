@@ -16,25 +16,33 @@ def main():
 
     parser.add_argument("input", help="input GPX trace")
 
-    parser.add_argument("output", help="output GPX trace",
-                        type=argparse.FileType("w"))
+    parser.add_argument("output", help="output GPX trace", type=argparse.FileType("w"))
 
-    parser.add_argument("-d", "--distance", type=float, default=100,
-                        help="search distance around trace")
+    parser.add_argument(
+        "-d", "--distance", type=float, default=100, help="search distance around trace"
+    )
 
-    parser.add_argument("--html", action="store_true",
-                        help="generate HTML interactive map to <output>.html")
+    parser.add_argument(
+        "--html",
+        action="store_true",
+        help="generate HTML interactive map to <output>.html",
+    )
 
-    parser.add_argument("-p", "--poi-type", action="append",
-                        choices=thirsty.core.AMENITIES.keys(), default=None,
-                        help=f"set which type of amenities to consider (default: {default}")
+    parser.add_argument(
+        "-p",
+        "--poi-type",
+        action="append",
+        choices=thirsty.core.AMENITIES.keys(),
+        default=None,
+        help=f"set which type of amenities to consider (default: {default}",
+    )
 
     args = parser.parse_args()
 
     if args.input.startswith("http"):
         input = thirsty.core.download_gpx(args.input)
     else:
-        input = open(args.input, "rb") # noqa: SIM115
+        input = open(args.input, "rb")  # noqa: SIM115
 
     if args.poi_type is None:
         args.poi_type = [default]
