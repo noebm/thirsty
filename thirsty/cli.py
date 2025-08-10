@@ -17,6 +17,11 @@ def main():
     parser.add_argument("input", help="input GPX trace")
 
     parser.add_argument("output", help="output GPX trace", type=argparse.FileType("w"))
+    parser.add_argument(
+        "--route",
+        action="store_true",
+        help="use GPX route data instead of track",
+    )
 
     parser.add_argument(
         "-d", "--distance", type=float, default=100, help="search distance around trace"
@@ -50,7 +55,7 @@ def main():
     console.print(f"Selected amenities: {args.poi_type}")
 
     gpx = gpxpy.parse(input)
-    points = thirsty.core.gpx_points(gpx)
+    points = thirsty.core.gpx_points(gpx, args.route)
     bounds = thirsty.core.get_bounds(points)
     pois = thirsty.core.query_overpass(bounds, args.poi_type)
     pois = thirsty.core.filter_pois_near_track(
