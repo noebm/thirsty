@@ -25,6 +25,11 @@ AMENITIES: dict[AmenityType, str] = {
 }
 
 
+class POI(TypedDict):
+    lat: float
+    lon: float
+
+
 def display_gpx_on_map(data, pois):
     """
     Display the GPX route and POIs on a map
@@ -116,11 +121,6 @@ def get_bounds(gpx: gpxpy.mod_gpx.GPX) -> tuple[float, float, float, float]:
         pt.longitude for trk in gpx.tracks for seg in trk.segments for pt in seg.points
     )
     return min_lat, min_lon, max_lat, max_lon
-
-
-class POI(TypedDict):
-    lat: float
-    lon: float
 
 
 def query_overpass(
