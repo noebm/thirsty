@@ -28,9 +28,14 @@ AMENITIES: dict[AmenityType, str] = {
 }
 
 
+class Tags(TypedDict):
+    amenity: str
+
+
 class POI(TypedDict):
     lat: float
     lon: float
+    tags: Tags
 
 
 def display_gpx_on_map(points: list[Location], pois: list[POI]):
@@ -146,7 +151,7 @@ def add_waypoints_to_gpx(gpx: gpxpy.mod_gpx.GPX, pois: list[POI]) -> gpxpy.mod_g
     """
 
     for poi in pois:
-        wpt = gpxpy.gpx.GPXWaypoint()
+        wpt = gpxpy.mod_gpx.GPXWaypoint()
         wpt.latitude = poi["lat"]
         wpt.longitude = poi["lon"]
         wpt.name = "Water"
