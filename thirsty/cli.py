@@ -50,13 +50,16 @@ def main():
     console.print(f"Selected amenities: {args.poi_type}")
 
     gpx = gpxpy.parse(input)
-    bounds = thirsty.core.get_bounds(gpx)
+    points = thirsty.core.gpx_points(gpx)
+    bounds = thirsty.core.get_bounds(points)
     pois = thirsty.core.query_overpass(bounds, args.poi_type)
-    pois = thirsty.core.filter_pois_near_track(gpx, pois, max_distance_m=args.distance)
+    pois = thirsty.core.filter_pois_near_track(
+        points, pois, max_distance_m=args.distance
+    )
     gpx = thirsty.core.add_waypoints_to_gpx(gpx, pois)
 
     if args.html:
-        map = thirsty.core.display_gpx_on_map(gpx, pois)
+        map = thirsty.core.display_gpx_on_map(points, pois)
         map.save(args.output.name + ".html")
 
     gpx = thirsty.core.sanitize_gpx_text(gpx.to_xml())

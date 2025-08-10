@@ -11,6 +11,9 @@ import rich.progress
 
 console = rich.console.Console()
 
+# reuse gpxpy location type
+type Location = gpxpy.mod_gpx.mod_geo.Location
+
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
@@ -30,25 +33,14 @@ class POI(TypedDict):
     lon: float
 
 
-def display_gpx_on_map(data, pois):
+def display_gpx_on_map(points: list[Location], pois: list[POI]):
     """
     Display the GPX route and POIs on a map
     """
 
     # Create a base map centered around the middle of the GPX track
-    track_latitudes = [
-        point.latitude
-        for track in data.tracks
-        for segment in track.segments
-        for point in segment.points
-    ]
-
-    track_longitudes = [
-        point.longitude
-        for track in data.tracks
-        for segment in track.segments
-        for point in segment.points
-    ]
+    track_latitudes = [point.latitude for point in points]
+    track_longitudes = [point.longitude for point in points]
 
     center_lat = sum(track_latitudes) / len(track_latitudes)
     center_lon = sum(track_longitudes) / len(track_longitudes)
@@ -56,16 +48,10 @@ def display_gpx_on_map(data, pois):
     map_center = [center_lat, center_lon]
     folium_map = folium.Map(location=map_center, zoom_start=12)
 
-    # Plot the GPX track on the map
-    for track in data.tracks:
-        for segment in track.segments:
-            # Create a list of coordinates from the GPX track segment
-            track_coords = [
-                (point.latitude, point.longitude) for point in segment.points
-            ]
-            folium.PolyLine(track_coords, color="blue", weight=2.5, opacity=1).add_to(
-                folium_map
-            )
+    track_coords = [(point.latitude, point.longitude) for point in points]
+    folium.PolyLine(track_coords, color="blue", weight=2.5, opacity=1).add_to(
+        folium_map
+    )
 
     # Plot POIs on the map
     for poi in pois:
@@ -103,23 +89,17 @@ def download_gpx(url):
     return data
 
 
-def get_bounds(gpx: gpxpy.mod_gpx.GPX) -> tuple[float, float, float, float]:
+def get_bounds(
+    points: list[Location],
+) -> tuple[float, float, float, float]:
     """
     Return GPX trace bounding box [south, west, north, est]
     """
 
-    min_lat = min(
-        pt.latitude for trk in gpx.tracks for seg in trk.segments for pt in seg.points
-    )
-    max_lat = max(
-        pt.latitude for trk in gpx.tracks for seg in trk.segments for pt in seg.points
-    )
-    min_lon = min(
-        pt.longitude for trk in gpx.tracks for seg in trk.segments for pt in seg.points
-    )
-    max_lon = max(
-        pt.longitude for trk in gpx.tracks for seg in trk.segments for pt in seg.points
-    )
+    min_lat = min(pt.latitude for pt in points)
+    max_lat = max(pt.latitude for pt in points)
+    min_lon = min(pt.longitude for pt in points)
+    max_lon = max(pt.longitude for pt in points)
     return min_lat, min_lon, max_lat, max_lon
 
 
@@ -144,6 +124,20 @@ def query_overpass(
     response = requests.post(OVERPASS_URL, data=query)
     response.raise_for_status()
     return response.json()["elements"]
+
+
+def gpx_points(gpx: gpxpy.mod_gpx.GPX, use_route: bool = False) -> list[Location]:
+
+    if use_route:
+        # FIXME: should this use all routes in sequence?
+        return [point for route in gpx.routes for point in route.points]
+
+    return [
+        point
+        for track in gpx.tracks
+        for segment in track.segments
+        for point in segment.points
+    ]
 
 
 def add_waypoints_to_gpx(gpx: gpxpy.mod_gpx.GPX, pois: list[POI]) -> gpxpy.mod_gpx.GPX:
@@ -184,13 +178,12 @@ def haversine(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def filter_pois_near_track(
-    gpx: gpxpy.mod_gpx.GPX, pois: list[POI], max_distance_m: float = 100
+    points: list[Location], pois: list[POI], max_distance_m: float = 100
 ) -> list[POI]:
     """
     Keep only POI near trace
     """
 
-    points = [pt for trk in gpx.tracks for seg in trk.segments for pt in seg.points]
     nearby_pois = []
 
     for poi in rich.progress.track(pois, description="Filtering POI"):
