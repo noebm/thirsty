@@ -6,9 +6,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pre-commit==4.2.0",
-        "commitizen==4.6.0",
+        "commitizen==4.8.3",
         "gpxpy==1.6.2",
-        "requests==2.32.3",
+        "requests==2.32.4",
         "rich==14.0.0",
         "folium==0.19.5",
     ],
