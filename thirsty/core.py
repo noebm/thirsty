@@ -1,6 +1,7 @@
 import io
 import math
 import re
+from typing import Literal, TypedDict
 
 import folium
 import gpxpy
@@ -13,8 +14,9 @@ console = rich.console.Console()
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
 
+type AmenityType = Literal["water", "point", "tap", "spring", "fountain"]
 
-AMENITIES = {
+AMENITIES: dict[AmenityType, str] = {
     "water": "[amenity=drinking_water]",
     "point": "[amenity=water_point][drinking_water=yes]",
     "tap": "[man_made=water_tap][drinking_water=yes]",
@@ -96,7 +98,7 @@ def download_gpx(url):
     return data
 
 
-def get_bounds(gpx):
+def get_bounds(gpx: gpxpy.mod_gpx.GPX) -> tuple[float, float, float, float]:
     """
     Return GPX trace bounding box [south, west, north, est]
     """
@@ -116,7 +118,14 @@ def get_bounds(gpx):
     return min_lat, min_lon, max_lat, max_lon
 
 
-def query_overpass(bbox, poi_types):
+class POI(TypedDict):
+    lat: float
+    lon: float
+
+
+def query_overpass(
+    bbox: tuple[float, float, float, float], poi_types: list[AmenityType]
+) -> list[POI]:
     """
     Generate an Overpass QL query for potable drinking water POIs.
     """
@@ -137,7 +146,7 @@ def query_overpass(bbox, poi_types):
     return response.json()["elements"]
 
 
-def add_waypoints_to_gpx(gpx, pois):
+def add_waypoints_to_gpx(gpx: gpxpy.mod_gpx.GPX, pois: list[POI]) -> gpxpy.mod_gpx.GPX:
     """
     Add POI to GPX trace
     """
@@ -154,7 +163,7 @@ def add_waypoints_to_gpx(gpx, pois):
     return gpx
 
 
-def haversine(lat1, lon1, lat2, lon2):
+def haversine(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
     Return distance in meter between two GPS points
     """
@@ -174,7 +183,9 @@ def haversine(lat1, lon1, lat2, lon2):
     return R * c
 
 
-def filter_pois_near_track(gpx, pois, max_distance_m=100):
+def filter_pois_near_track(
+    gpx: gpxpy.mod_gpx.GPX, pois: list[POI], max_distance_m: float = 100
+) -> list[POI]:
     """
     Keep only POI near trace
     """
@@ -193,7 +204,7 @@ def filter_pois_near_track(gpx, pois, max_distance_m=100):
     return nearby_pois
 
 
-def sanitize_gpx_text(data):
+def sanitize_gpx_text(data: str) -> str:
     """
     Fix GPX content by replacing unescaped '&' with '&amp;'
     """
