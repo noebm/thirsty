@@ -134,8 +134,14 @@ def query_overpass(
 def gpx_points(gpx: gpxpy.mod_gpx.GPX, use_route: bool = False) -> list[Location]:
 
     if use_route:
+        if not gpx.routes:
+            raise ValueError("GPX data does not contain any routes")
+
         # FIXME: should this use all routes in sequence?
         return [point for route in gpx.routes for point in route.points]
+
+    if not gpx.tracks:
+        raise ValueError("GPX data does not contain any tracks")
 
     return [
         point
