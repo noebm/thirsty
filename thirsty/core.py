@@ -8,6 +8,7 @@ import gpxpy
 import requests
 import rich.console
 import rich.progress
+from gpxpy.geo import haversine_distance
 
 console = rich.console.Console()
 
@@ -168,26 +169,6 @@ def add_waypoints_to_gpx(gpx: gpxpy.mod_gpx.GPX, pois: list[POI]) -> gpxpy.mod_g
     return gpx
 
 
-def haversine(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """
-    Return distance in meter between two GPS points
-    """
-
-    R = 6371000  # Earth radius in meter
-    phi1 = math.radians(lat1)
-    phi2 = math.radians(lat2)
-    d_phi = math.radians(lat2 - lat1)
-    d_lambda = math.radians(lon2 - lon1)
-
-    a = (
-        math.sin(d_phi / 2) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(d_lambda / 2) ** 2
-    )
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-    return R * c
-
-
 def filter_pois_near_track(
     points: list[Location], pois: list[POI], max_distance_m: float = 100
 ) -> list[POI]:
@@ -200,7 +181,7 @@ def filter_pois_near_track(
     for poi in rich.progress.track(pois, description="Filtering POI"):
         lat, lon = poi["lat"], poi["lon"]
         if any(
-            haversine(lat, lon, pt.latitude, pt.longitude) < max_distance_m
+            haversine_distance(lat, lon, pt.latitude, pt.longitude) < max_distance_m
             for pt in points
         ):
             nearby_pois.append(poi)
