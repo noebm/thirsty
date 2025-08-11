@@ -1,19 +1,15 @@
 import io
-import math
 import re
 from typing import Literal, TypedDict
 
 import folium
-import gpxpy
 import requests
 import rich.console
 import rich.progress
-from gpxpy.geo import haversine_distance
+from gpxpy.geo import Location, haversine_distance
+from gpxpy.gpx import GPX, GPXWaypoint
 
 console = rich.console.Console()
-
-# reuse gpxpy location type
-type Location = gpxpy.mod_gpx.mod_geo.Location
 
 
 OVERPASS_URL = "http://overpass-api.de/api/interpreter"
@@ -132,7 +128,7 @@ def query_overpass(
     return response.json()["elements"]
 
 
-def gpx_points(gpx: gpxpy.mod_gpx.GPX, use_route: bool = False) -> list[Location]:
+def gpx_points(gpx: GPX, use_route: bool = False) -> list[Location]:
 
     if use_route:
         if not gpx.routes:
@@ -152,13 +148,13 @@ def gpx_points(gpx: gpxpy.mod_gpx.GPX, use_route: bool = False) -> list[Location
     ]
 
 
-def add_waypoints_to_gpx(gpx: gpxpy.mod_gpx.GPX, pois: list[POI]) -> gpxpy.mod_gpx.GPX:
+def add_waypoints_to_gpx(gpx: GPX, pois: list[POI]) -> GPX:
     """
     Add POI to GPX trace
     """
 
     for poi in pois:
-        wpt = gpxpy.mod_gpx.GPXWaypoint()
+        wpt = GPXWaypoint()
         wpt.latitude = poi["lat"]
         wpt.longitude = poi["lon"]
         wpt.name = "Water"
