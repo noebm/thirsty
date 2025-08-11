@@ -153,14 +153,16 @@ def add_waypoints_to_gpx(gpx: GPX, pois: list[POI]) -> GPX:
     Add POI to GPX trace
     """
 
-    for poi in pois:
-        wpt = GPXWaypoint()
-        wpt.latitude = poi["lat"]
-        wpt.longitude = poi["lon"]
-        wpt.name = "Water"
-        wpt.description = "Water"
-        wpt.symbol = "water-drop"
-        gpx.waypoints.append(wpt)
+    gpx.waypoints.extend(
+        GPXWaypoint(
+            latitude=poi["lat"],
+            longitude=poi["lon"],
+            name="Water",
+            description="Water",
+            symbol="water-drop",
+        )
+        for poi in pois
+    )
 
     return gpx
 
