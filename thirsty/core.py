@@ -1,6 +1,6 @@
 import io
 import re
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, cast
 
 import folium
 import requests
@@ -128,24 +128,19 @@ def query_overpass(
     return response.json()["elements"]
 
 
-def gpx_points(gpx: GPX, use_route: bool = False) -> list[Location]:
-
-    if use_route:
-        if not gpx.routes:
-            raise ValueError("GPX data does not contain any routes")
-
-        # FIXME: should this use all routes in sequence?
-        return [point for route in gpx.routes for point in route.points]
-
-    if not gpx.tracks:
-        raise ValueError("GPX data does not contain any tracks")
-
-    return [
-        point
+def gpx_points(gpx: GPX) -> list[Location]:
+    track_points = [
+        cast(Location, point)
         for track in gpx.tracks
         for segment in track.segments
         for point in segment.points
     ]
+
+    route_points = [
+        cast(Location, point) for route in gpx.routes for point in route.points
+    ]
+
+    return track_points + route_points
 
 
 def add_waypoints_to_gpx(gpx: GPX, pois: list[POI]) -> GPX:
